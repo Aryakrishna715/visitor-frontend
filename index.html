@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BRINDAVAN GROUP OF INSTITUTIONS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css"> <!-- Link to the CSS file -->
+</head>
+<body>
+    <div class="container">
+        <h1>BRINDAVAN GROUP OF INSTITUTIONS</h1>
+        <form id="visitorForm" onsubmit="submitForm(event)">
+            <label for="visitorName">Full Name:</label>
+            <input type="text" id="visitorName" name="visitorName" required>
+
+            <label for="noOfPersons">Number of Persons:</label>
+            <input type="number" id="noOfPersons" name="noOfPersons" min="1" required>
+
+            <label for="purpose">Purpose of Visit:</label>
+            <select id="purpose" name="purpose" required>
+                <option value="Admission">Admission</option>
+                <option value="College Fest">College Fest</option>
+                <option value="Job Requirements">Job Requirements</option>
+                <option value="Parent-Teacher Meetings">Parent-Teacher Meetings</option>
+                <option value="College Events">College Events</option>
+                <option value="Others">Others</option>
+            </select>
+
+            <label for="contactNumber">Contact Number:</label>
+            <input type="tel" id="contactNumber" name="contactNumber" pattern="[0-9]{10}" placeholder="Enter 10-digit number" required>
+
+            <!-- New Date Field -->
+            <label for="visitDate">Date of Visit:</label>
+            <input type="date" id="visitDate" name="visitDate" required>
+
+            <button type="submit">Submit</button>
+        </form>
+        <div id="formMessage" class="form-footer"></div>
+    </div>
+
+    <script src="script.js"></script> <!-- Link to the JavaScript file -->
+</body>
+</html>
