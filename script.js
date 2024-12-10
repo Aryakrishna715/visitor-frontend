@@ -17,8 +17,9 @@ async function submitForm(event) {
         `;
         return;
     }
-     // Add the current timestamp
-     const submissionTime = new Date().toISOString();
+
+    // Add the current timestamp
+    const submissionTime = new Date().toISOString();
 
     // Prepare the form data
     const formData = {
@@ -35,7 +36,7 @@ async function submitForm(event) {
 
     try {
         // Make a POST request to submit the form data to the backend
-        const response = await fetch('https://visitor-backendd.onrender.com/submit', { // Ensure the backend route matches
+        const response = await fetch('https://visitor-backenddd.onrender.com/submit', { // Ensure the backend route matches
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
