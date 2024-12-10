@@ -36,7 +36,7 @@ async function submitForm(event) {
 
     try {
         // Make a POST request to submit the form data to the backend
-        const response = await fetch('https://visitor-backend-16.onrender.com/submit', { // Ensure the backend route matches
+        const response = await fetch('https://visitor-backend-17.onrender.com/submit', { // Ensure the backend route matches
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
