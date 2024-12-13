@@ -1,5 +1,5 @@
 async function submitForm(event) {
-    event.preventDefault(); // Prevent default form submission behavior
+    event.preventDefault(); // Prevent the default form submission behavior
 
     // Collect form data from input fields
     const visitorName = document.getElementById('visitorName').value.trim();
@@ -11,7 +11,7 @@ async function submitForm(event) {
     // Display element to show messages
     const formMessageElement = document.getElementById('formMessage');
 
-    // Validate the form inputs
+    // Validate the form inputs (ensure all fields are filled)
     if (!visitorName || !noOfPersons || !purpose || !contactNumber || !visitDate) {
         formMessageElement.innerHTML = `
             <div class="error-message">
@@ -21,7 +21,7 @@ async function submitForm(event) {
         return;
     }
 
-    // Validate contact number (10 digits)
+    // Validate contact number (example: 10 digits for phone number)
     if (!/^[0-9]{10}$/.test(contactNumber)) {
         formMessageElement.innerHTML = `
             <div class="error-message">
@@ -50,38 +50,41 @@ async function submitForm(event) {
         visitDate,
     };
 
+    // Debug: Log the form data
+    console.log('Form Data:', formData);
+
     try {
-        // Show a loading message while the server processes the request
+        // Display a loading message while waiting for the server response
         formMessageElement.innerHTML = `
             <div class="loading-message">
                 <p>Submitting your information... Please wait.</p>
             </div>
         `;
 
-        // Make a POST request to the Render backend
-        const response = await fetch('https://visitor-backend-24.onrender.com', {
+        // Make a POST request to submit the form data to the backend
+        const response = await fetch('https://visitor-backend-25.onrender.com/submit', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify(formData),
+            body: JSON.stringify(formData), // Convert the formData object to a JSON string
         });
 
         // Handle the response from the server
         if (response.ok) {
-            const result = await response.json(); // Parse JSON response
+            const result = await response.json(); // Parse the JSON response
             console.log('Server Response:', result);
 
-            // Show success message and provide the E-Pass download link
+            // Show a success message and provide a link to download the E-Pass
             formMessageElement.innerHTML = `
                 <div class="success-message">
                     <p>Thank you, ${visitorName}, for submitting your information!</p>
-                    <p>You can download your E-Pass using the link below:</p>
+                    <p>You can download your E-Pass by clicking the link below:</p>
                     <a href="${result.downloadLink}" target="_blank" class="download-link">Download E-Pass</a>
                 </div>
             `;
         } else {
-            // Handle server errors
+            // Handle server-side errors
             const errorResult = await response.json(); // Parse the error response
             console.error('Server Error:', errorResult);
 
