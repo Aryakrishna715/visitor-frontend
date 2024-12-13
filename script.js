@@ -54,7 +54,7 @@ async function submitForm(event) {
     console.log('Form Data:', formData);
 
     try {
-        // Display a loading message
+        // Display a loading message while waiting for the server response
         formMessageElement.innerHTML = `
             <div class="loading-message">
                 <p>Submitting your information... Please wait.</p>
@@ -62,7 +62,7 @@ async function submitForm(event) {
         `;
 
         // Make a POST request to submit the form data to the backend
-        const response = await fetch('https://visitor-backend-19.onrender.com/submit', {
+        const response = await fetch('https://visitor-backend-20.onrender.com/submit', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
