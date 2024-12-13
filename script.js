@@ -8,9 +8,12 @@ async function submitForm(event) {
     const contactNumber = document.getElementById('contactNumber').value.trim();
     const visitDate = document.getElementById('visitDate').value.trim();
 
+    // Display element to show messages
+    const formMessageElement = document.getElementById('formMessage');
+
     // Validate the form inputs (ensure all fields are filled)
     if (!visitorName || !noOfPersons || !purpose || !contactNumber || !visitDate) {
-        document.getElementById('formMessage').innerHTML = `
+        formMessageElement.innerHTML = `
             <div class="error-message">
                 <p>All fields are required. Please fill out the form completely.</p>
             </div>
@@ -18,25 +21,48 @@ async function submitForm(event) {
         return;
     }
 
-    // Add the current timestamp
-    const submissionTime = new Date().toISOString();
+    // Validate contact number (example: 10 digits for phone number)
+    if (!/^[0-9]{10}$/.test(contactNumber)) {
+        formMessageElement.innerHTML = `
+            <div class="error-message">
+                <p>Invalid contact number. Please enter a valid 10-digit number.</p>
+            </div>
+        `;
+        return;
+    }
+
+    // Validate number of persons (must be a positive number)
+    if (isNaN(noOfPersons) || noOfPersons <= 0) {
+        formMessageElement.innerHTML = `
+            <div class="error-message">
+                <p>Invalid number of persons. Please enter a valid number greater than 0.</p>
+            </div>
+        `;
+        return;
+    }
 
     // Prepare the form data
     const formData = {
         visitorName,
-        noOfPersons: parseInt(noOfPersons, 10), // Ensure 'noOfPersons' is a number
+        noOfPersons: parseInt(noOfPersons, 10), // Convert 'noOfPersons' to a number
         purpose,
         contactNumber,
         visitDate,
-        submissionTime, 
     };
 
-    // Log the form data for debugging
+    // Debug: Log the form data
     console.log('Form Data:', formData);
 
     try {
+        // Display a loading message
+        formMessageElement.innerHTML = `
+            <div class="loading-message">
+                <p>Submitting your information... Please wait.</p>
+            </div>
+        `;
+
         // Make a POST request to submit the form data to the backend
-        const response = await fetch('https://visitor-backend-18.onrender.com/submit', { // Ensure the backend route matches
+        const response = await fetch('https://visitor-backend-18.onrender.com/submit', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -50,7 +76,7 @@ async function submitForm(event) {
             console.log('Server Response:', result);
 
             // Show a success message and provide a link to download the E-Pass
-            document.getElementById('formMessage').innerHTML = `
+            formMessageElement.innerHTML = `
                 <div class="success-message">
                     <p>Thank you, ${visitorName}, for submitting your information!</p>
                     <p>You can download your E-Pass by clicking the link below:</p>
@@ -62,7 +88,7 @@ async function submitForm(event) {
             const errorResult = await response.json(); // Parse the error response
             console.error('Server Error:', errorResult);
 
-            document.getElementById('formMessage').innerHTML = `
+            formMessageElement.innerHTML = `
                 <div class="error-message">
                     <p>Error: ${errorResult.message || 'An unknown error occurred.'}</p>
                 </div>
@@ -71,7 +97,7 @@ async function submitForm(event) {
     } catch (err) {
         // Handle client-side errors (e.g., network issues)
         console.error('Error handling form submission:', err);
-        document.getElementById('formMessage').innerHTML = `
+        formMessageElement.innerHTML = `
             <div class="error-message">
                 <p>Sorry, there was an error submitting your form. Please try again later.</p>
             </div>
