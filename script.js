@@ -59,7 +59,7 @@ async function submitForm(event) {
         `;
 
         // Make a POST request to the Render backend
-        const response = await fetch('https://visitor-backend-23.onrender.com', {
+        const response = await fetch('https://visitor-backend-24.onrender.com', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
