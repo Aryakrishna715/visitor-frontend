@@ -10,11 +10,29 @@ async function submitForm(event) {
 
     const formMessageElement = document.getElementById('formMessage'); // Message container
 
-    // Validate inputs (basic validation)
+    // Basic Input Validation
     if (!visitorName || !noOfPersons || !purpose || !contactNumber || !visitDate) {
         formMessageElement.innerHTML = `
             <div class="error-message">
                 <p>All fields are required. Please fill out the form completely.</p>
+            </div>
+        `;
+        return;
+    }
+
+    if (!/^[0-9]{10}$/.test(contactNumber)) {
+        formMessageElement.innerHTML = `
+            <div class="error-message">
+                <p>Invalid contact number. Please enter a valid 10-digit number.</p>
+            </div>
+        `;
+        return;
+    }
+
+    if (isNaN(noOfPersons) || noOfPersons <= 0) {
+        formMessageElement.innerHTML = `
+            <div class="error-message">
+                <p>Invalid number of persons. Please enter a valid number greater than 0.</p>
             </div>
         `;
         return;
@@ -53,7 +71,7 @@ async function submitForm(event) {
             // Automatically open the PDF in a new tab
             window.open(result.pdfURL, '_blank');
 
-            // Provide a download button/link for the PDF
+            // Provide a success message and a downloadable link
             formMessageElement.innerHTML = `
                 <div class="success-message">
                     <p>Thank you, ${visitorName}, for submitting your information!</p>
@@ -65,22 +83,23 @@ async function submitForm(event) {
                 </div>
             `;
         } else {
+            // Handle server errors
             const errorResult = await response.json();
             console.error('Server Error:', errorResult);
 
             formMessageElement.innerHTML = `
                 <div class="error-message">
-                    <p>Error: ${errorResult.message || 'An unknown error occurred.'}</p>
+                    <p>Error: ${errorResult.message || 'An unknown error occurred. Please try again later.'}</p>
                 </div>
             `;
         }
     } catch (err) {
+        // Handle client-side or network errors
         console.error('Error handling form submission:', err);
         formMessageElement.innerHTML = `
             <div class="error-message">
-                <p>Sorry, there was an error submitting your form. Please try again later.</p>
+                <p>Sorry, there was an error submitting your form. Please check your network connection and try again later.</p>
             </div>
         `;
     }
 }
-
