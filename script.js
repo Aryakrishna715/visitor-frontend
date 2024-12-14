@@ -11,66 +11,99 @@ async function submitForm(event) {
     // Display element to show messages
     const formMessageElement = document.getElementById('formMessage');
 
-    // Validate inputs
+    // Validate the form inputs (ensure all fields are filled)
     if (!visitorName || !noOfPersons || !purpose || !contactNumber || !visitDate) {
-        formMessageElement.innerHTML = `<p class="error-message">All fields are required.</p>`;
-        return;
-    }
-    if (!/^[0-9]{10}$/.test(contactNumber)) {
-        formMessageElement.innerHTML = `<p class="error-message">Invalid contact number. Please enter a valid 10-digit number.</p>`;
-        return;
-    }
-    if (isNaN(noOfPersons) || noOfPersons <= 0) {
-        formMessageElement.innerHTML = `<p class="error-message">Invalid number of persons. Enter a valid number greater than 0.</p>`;
+        formMessageElement.innerHTML = 
+            <div class="error-message">
+                <p>All fields are required. Please fill out the form completely.</p>
+            </div>
+        ;
         return;
     }
 
+    // Validate contact number (example: 10 digits for phone number)
+    if (!/^[0-9]{10}$/.test(contactNumber)) {
+        formMessageElement.innerHTML = 
+            <div class="error-message">
+                <p>Invalid contact number. Please enter a valid 10-digit number.</p>
+            </div>
+        ;
+        return;
+    }
+
+    // Validate number of persons (must be a positive number)
+    if (isNaN(noOfPersons) || noOfPersons <= 0) {
+        formMessageElement.innerHTML = 
+            <div class="error-message">
+                <p>Invalid number of persons. Please enter a valid number greater than 0.</p>
+            </div>
+        ;
+        return;
+    }
+
+    // Prepare the form data
     const formData = {
         visitorName,
-        noOfPersons: parseInt(noOfPersons, 10),
+        noOfPersons: parseInt(noOfPersons, 10), // Convert 'noOfPersons' to a number
         purpose,
         contactNumber,
         visitDate,
     };
 
-    try {
-        // Show a loading message
-        formMessageElement.innerHTML = `<p class="loading-message">Submitting your information... Please wait.</p>`;
+    // Debug: Log the form data
+    console.log('Form Data:', formData);
 
-        // Make the POST request
+    try {
+        // Display a loading message while waiting for the server response
+        formMessageElement.innerHTML = 
+            <div class="loading-message">
+                <p>Submitting your information... Please wait.</p>
+            </div>
+        ;
+
+        // Make a POST request to submit the form data to the backend
         const response = await fetch('https://visitor-backend-vgeq.onrender.com/submit', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(formData),
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(formData), // Convert the formData object to a JSON string
         });
 
+        // Handle the response from the server
         if (response.ok) {
-            const result = await response.json();
+            const result = await response.json(); // Parse the JSON response
             console.log('Server Response:', result);
 
             // Open the PDF in a new tab
-            const newTab = window.open(result.pdfURL, '_blank');
-            if (!newTab) {
-                alert('Popup blocked! Please allow popups to view your E-Pass.');
-            }
+            window.open(result.pdfURL, '_blank'); // Open the PDF in a new browser tab
 
-            // Success message
-            formMessageElement.innerHTML = `
-                <p class="success-message">
-                    Thank you, ${visitorName}, for submitting your information!
-                </p>
-                <p>Your E-Pass has been opened in a new tab.</p>
-                <p>
-                    If it did not open, <a href="${result.pdfURL}" target="_blank">click here</a>.
-                </p>
-            `;
+            // Show a success message
+            formMessageElement.innerHTML = 
+                <div class="success-message">
+                    <p>Thank you, ${visitorName}, for submitting your information!</p>
+                    <p>Your E-Pass has been opened in a new tab.</p>
+                    <p>If it did not open automatically, you can <a href="${result.pdfURL}" target="_blank" class="download-link">click here to download it manually</a>.</p>
+                </div>
+            ;
         } else {
-            const errorResult = await response.json();
+            // Handle server-side errors
+            const errorResult = await response.json(); // Parse the error response
             console.error('Server Error:', errorResult);
-            formMessageElement.innerHTML = `<p class="error-message">Error: ${errorResult.message || 'An unknown error occurred.'}</p>`;
+
+            formMessageElement.innerHTML = 
+                <div class="error-message">
+                    <p>Error: ${errorResult.message || 'An unknown error occurred.'}</p>
+                </div>
+            ;
         }
-    } catch (error) {
-        console.error('Error:', error);
-        formMessageElement.innerHTML = `<p class="error-message">An error occurred. Please try again later.</p>`;
+    } catch (err) {
+        // Handle client-side errors (e.g., network issues)
+        console.error('Error handling form submission:', err);
+        formMessageElement.innerHTML = 
+            <div class="error-message">
+                <p>Sorry, there was an error submitting your form. Please try again later.</p>
+            </div>
+        ;
     }
-}
+} 
