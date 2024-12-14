@@ -62,7 +62,7 @@ async function submitForm(event) {
         `;
 
         // Make a POST request to submit the form data to the backend
-        const response = await fetch('https://visitor-backend.onrender.com/submit', {
+        const response = await fetch('https://visitor-backend-vgeq.onrender.com/submit', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
