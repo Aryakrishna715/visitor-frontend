@@ -75,12 +75,15 @@ async function submitForm(event) {
             const result = await response.json(); // Parse the JSON response
             console.log('Server Response:', result);
 
-            // Show a success message and provide a link to download the E-Pass
+            // Open the PDF in a new tab
+            window.open(result.pdfURL, '_blank'); // Open the PDF in a new browser tab
+
+            // Show a success message
             formMessageElement.innerHTML = `
                 <div class="success-message">
                     <p>Thank you, ${visitorName}, for submitting your information!</p>
-                    <p>You can download your E-Pass by clicking the link below:</p>
-                    <a href="${result.downloadLink}" target="_blank" class="download-link">Download E-Pass</a>
+                    <p>Your E-Pass has been opened in a new tab.</p>
+                    <p>If it did not open automatically, you can <a href="${result.pdfURL}" target="_blank" class="download-link">click here to download it manually</a>.</p>
                 </div>
             `;
         } else {
