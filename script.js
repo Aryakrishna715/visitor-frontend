@@ -75,9 +75,8 @@ async function submitForm(event) {
             formMessageElement.innerHTML = `
                 <div class="success-message">
                     <p>Thank you, ${visitorName}, for submitting your information!</p>
-                    <p>Your E-Pass has been opened in a new tab.</p>
                     <p>
-                        You can also download the PDF here: 
+                        You can download the PDF here: 
                         <a href="${result.pdfURL}" target="_blank" class="download-link">Download PDF</a>
                     </p>
                 </div>
